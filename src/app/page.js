@@ -1,65 +1,662 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { FiArrowRight, FiClock, FiMapPin, FiPhone, FiShield, FiWifi, FiCoffee, FiUsers, FiCalendar, FiSearch } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 
 export default function Home() {
+  const busImages = [
+    '/images/Buss.png',
+    '/images/Buss2.png', 
+    '/images/Buss3.png'
+  ];
+  
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [tripType, setTripType] = useState('oneWay');
+  const [galleryImageIndex, setGalleryImageIndex] = useState(0);
+  const galleryImages = [
+    '/images/Buss.png',
+    '/images/Bus1.png',
+    '/images/seatimage3.jpeg',
+    '/images/Bus2.jpeg',
+    '/images/Buss2.png',
+    '/images/Buss3.png',
+    '/images/seatimage2.jpeg',
+    '/images/van1.png',
+    '/images/Van2.png',
+    '/images/seatimage.jpeg',
+    '/images/seatimage4.jpeg'
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex(prevIndex => (prevIndex + 1) % busImages.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [busImages.length]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGalleryImageIndex(prevIndex => (prevIndex + 1) % galleryImages.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [galleryImages.length]);
+
+  const features = [
+    {
+      icon: <FiShield className="w-8 h-8 text-blue-600" />,
+      title: 'Safe Travel',
+      description: 'Your safety is our top priority with well-maintained buses and professional drivers.'
+    },
+    {
+      icon: <FiClock className="w-8 h-8 text-blue-600" />,
+      title: 'On Time',
+      description: 'We value your time with 95% on-time performance across all our routes.'
+    },
+    {
+      icon: <FiWifi className="w-8 h-8 text-blue-600" />,
+      title: 'Free WiFi',
+      description: 'Stay connected with our complimentary high-speed WiFi on all premium buses.'
+    },
+    {
+      icon: <FiCoffee className="w-8 h-8 text-blue-600" />,
+      title: 'Comfort',
+      description: 'Travel in comfort with spacious seating and climate control on all our buses.'
+    },
+    {
+      icon: <FiUsers className="w-8 h-8 text-blue-600" />,
+      title: '24/7 Support',
+      description: 'Our customer care team is available round the clock to assist you.'
+    },
+    {
+      icon: <FiMapPin className="w-8 h-8 text-blue-600" />,
+      title: '100+ Destinations',
+      description: 'Extensive network covering major cities and tourist destinations across India.'
+    }
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="min-h-screen">
+      {/* Hero Section - Premium Travel Experience */}
+      <section className="relative min-h-screen flex items-start justify-start overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[url('/images/heroback.png')] bg-contain bg-right bg-no-repeat opacity-40"></div>
+          {/* Left side shadow for text */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 via-black/30 to-transparent"></div>
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 pl-9 relative z-10 pt-32">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="text-left max-w-4xl"
+          >
+            {/* Trust Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-lg rounded-full border border-white/30 mb-8 shadow-2xl"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              <FiShield className="w-5 h-5 text-yellow-400 mr-2" />
+              <span className="text-white font-medium">SINCE 2024 • 50,000+ HAPPY TRAVELERS</span>
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight"
             >
-              Learning
-            </a>{" "}
-            center.
+              <span className="bg-gradient-to-r from-white via-yellow-100 to-white bg-clip-text text-transparent drop-shadow-2xl">
+                Discover Incredible
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent drop-shadow-2xl">
+                India With Us
+              </span>
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.4 }}
+              className="text-xl md:text-2xl text-white/90 max-w-4xl leading-relaxed mb-12 drop-shadow-lg"
+            >
+              Experience the magic of India's diverse landscapes, from pristine beaches to majestic mountains, 
+              ancient temples to modern cities. Your unforgettable journey starts here.
+            </motion.p>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="flex flex-col sm:flex-row justify-start gap-4"
+            >
+              <Link 
+                href="/booking"
+                className="group relative px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-full transition-all duration-300 shadow-xl hover:shadow-purple-500/25 hover:scale-105 border-2 border-purple-400/30 text-sm"
+              >
+                <span className="relative z-10 flex items-center">
+                  <FiSearch className="mr-2 w-4 h-4" />
+                  Explore Destinations
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-700 to-pink-700 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </Link>
+              
+              <Link 
+                href="routes"
+                className="group px-8 py-3 bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-bold rounded-full transition-all duration-300 hover:shadow-teal-500/25 hover:scale-105 shadow-xl border-2 border-teal-400/30 text-sm"
+              >
+                <span className="flex items-center">
+                  <FiMapPin className="mr-2 w-4 h-4" />
+                  View Tour Packages
+                </span>
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+        
+        {/* Scroll Indicator */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1 }}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        >
+          <div className="flex flex-col items-center text-white/60">
+            <span className="text-sm mb-2">Explore More</span>
+            <motion.div 
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center"
+            >
+              <motion.div 
+                animate={{ y: [0, 12, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="w-1 h-3 bg-white/60 rounded-full mt-2"
+              ></motion.div>
+            </motion.div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Premium Tourism Search Section */}
+      <section className="py-20 md:py-28 relative overflow-hidden">
+        {/* Glassy Background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1501555088652-021faa106b9b?q=80&w=2070')] bg-cover bg-center opacity-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-blue-50/80 to-indigo-50/90 backdrop-blur-sm"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center max-w-4xl mx-auto mb-16"
+          >
+            <span className="text-blue-600 font-semibold text-sm tracking-wider uppercase">PLAN YOUR JOURNEY</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-4 mb-6">
+              Find Your Perfect
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"> Travel Experience</span>
+            </h2>
+            <p className="text-lg text-gray-600 leading-relaxed">Search from our premium fleet of luxury buses and explore India's most beautiful destinations</p>
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="max-w-6xl mx-auto"
+          >
+            <div className="bg-white/60 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/30 p-10 relative overflow-hidden">
+              {/* Glass Effect Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-blue-50/40"></div>
+              
+              <div className="relative z-10">
+                <form className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  {/* Trip Type */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    className="lg:col-span-12"
+                  >
+                    <div className="flex bg-white/50 backdrop-blur-sm rounded-2xl p-1 border border-white/30">
+                      <button 
+                        type="button"
+                        onClick={() => setTripType('oneWay')}
+                        className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${tripType === 'oneWay' ? 'bg-white shadow-lg text-blue-600' : 'text-gray-600 hover:text-gray-800'}`}
+                      >
+                        One Way Journey
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => setTripType('roundTrip')}
+                        className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${tripType === 'roundTrip' ? 'bg-white shadow-lg text-blue-600' : 'text-gray-600 hover:text-gray-800'}`}
+                      >
+                        Round Trip Journey
+                      </button>
+                    </div>
+                  </motion.div>
+
+                  {/* From */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="lg:col-span-3"
+                  >
+                    <label className="block text-sm font-bold text-gray-700 mb-3 flex items-center">
+                      <FiMapPin className="mr-2 text-blue-500" />
+                      Departure City
+                    </label>
+                    <div className="relative group">
+                      <select className="w-full px-5 py-4 rounded-2xl border border-white/40 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 bg-white/70 backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:bg-white/90 appearance-none font-medium">
+                        <option value="">Select Source</option>
+                        <option value="mumbai">Mumbai - City of Dreams</option>
+                        <option value="pune">Pune - Cultural Capital</option>
+                        <option value="nashik">Nashik - Wine City</option>
+                        <option value="bangalore">Bangalore - Silicon Valley</option>
+                        <option value="delhi">Delhi - Capital City</option>
+                      </select>
+                      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* To */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    className="lg:col-span-3"
+                  >
+                    <label className="block text-sm font-bold text-gray-700 mb-3 flex items-center">
+                      <FiMapPin className="mr-2 text-green-500" />
+                      Destination
+                    </label>
+                    <div className="relative group">
+                      <select className="w-full px-5 py-4 rounded-2xl border border-white/40 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 bg-white/70 backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:bg-white/90 appearance-none font-medium">
+                        <option value="">Select Destination</option>
+                        <option value="goa">Goa - Beach Paradise</option>
+                        <option value="shirdi">Shirdi - Spiritual Center</option>
+                        <option value="ahmedabad">Ahmedabad - Heritage City</option>
+                        <option value="surat">Surat - Diamond City</option>
+                        <option value="jaipur">Jaipur - Pink City</option>
+                      </select>
+                      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Departure Date */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                    className={`${tripType === 'roundTrip' ? 'lg:col-span-2' : 'lg:col-span-2'}`}
+                  >
+                    <label className="block text-sm font-bold text-gray-700 mb-3 flex items-center">
+                      <FiClock className="mr-2 text-blue-500" />
+                      {tripType === 'roundTrip' ? 'Departure Date' : 'Travel Date'}
+                    </label>
+                    <input 
+                      type="date" 
+                      className="w-full px-5 py-4 rounded-2xl border border-white/40 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 bg-white/70 backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:bg-white/90 font-medium"
+                      min={new Date().toISOString().split('T')[0]}
+                    />
+                  </motion.div>
+
+                  {/* Return Date - Only show for round trip */}
+                  {tripType === 'roundTrip' && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 0.5 }}
+                      className="lg:col-span-2"
+                    >
+                      <label className="block text-sm font-bold text-gray-700 mb-3 flex items-center">
+                        <FiClock className="mr-2 text-green-500" />
+                        Return Date
+                      </label>
+                      <input 
+                        type="date" 
+                        className="w-full px-5 py-4 rounded-2xl border border-white/40 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 bg-white/70 backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:bg-white/90 font-medium"
+                        min={new Date().toISOString().split('T')[0]}
+                      />
+                    </motion.div>
+                  )}
+
+                  {/* Search Button */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.6 }}
+                    className={`${tripType === 'roundTrip' ? 'lg:col-span-2' : 'lg:col-span-4'} flex items-end`}
+                  >
+                    <motion.button 
+                      type="submit" 
+                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-[1.02] flex items-center justify-center"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <FiSearch className="mr-3 w-5 h-5" />
+                      Search Luxury Buses
+                    </motion.button>
+                  </motion.div>
+                </form>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+      {/* Premium Features Section */}
+      <section className="py-20 md:py-28 relative overflow-hidden">
+        {/* Glassy Background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1488646953014-85cb44e25828b?q=80&w=2070')] bg-cover bg-center opacity-5"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-blue-50/90 to-indigo-50/95 backdrop-blur-sm"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center max-w-4xl mx-auto mb-20"
+          >
+            <span className="text-blue-600 font-semibold text-sm tracking-wider uppercase">WHY TRAVEL WITH US</span>
+            <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mt-3 mb-6">
+              Unforgettable
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"> Travel Experiences</span>
+            </h3>
+            <p className="text-lg text-gray-600 leading-relaxed">Discover India's beauty with our premium tourism services, designed to make every journey memorable</p>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <FiShield className="w-8 h-8 text-blue-600" />,
+                title: 'Safe & Secure Travel',
+                description: 'Your safety is our top priority with GPS-tracked luxury buses, professional drivers, and 24/7 emergency support throughout your journey.'
+              },
+              {
+                icon: <FiClock className="w-8 h-8 text-blue-600" />,
+                title: 'Punctual Departures',
+                description: 'We value your time with 95% on-time performance. Real-time tracking ensures you never miss a moment of your vacation.'
+              },
+              {
+                icon: <FiWifi className="w-8 h-8 text-blue-600" />,
+                title: 'Stay Connected',
+                description: 'Complimentary high-speed WiFi on all buses. Share your travel moments instantly with family and friends back home.'
+              },
+              {
+                icon: <FiCoffee className="w-8 h-8 text-blue-600" />,
+                title: 'Premium Comfort',
+                description: 'Luxury reclining seats, climate control, refreshments, and entertainment systems for a comfortable journey to your destination.'
+              },
+              {
+                icon: <FiUsers className="w-8 h-8 text-blue-600" />,
+                title: 'Expert Travel Guides',
+                description: 'Knowledgeable guides available for select routes. Learn about India\'s rich culture, history, and hidden gems.'
+              },
+              {
+                icon: <FiMapPin className="w-8 h-8 text-blue-600" />,
+                title: '100+ Destinations',
+                description: 'From pristine beaches to ancient temples, mountain retreats to vibrant cities - explore India\'s diverse landscapes with us.'
+              }
+            ].map((feature, index) => (
+              <motion.div 
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="bg-white/70 backdrop-blur-lg p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/30 hover:border-blue-200 hover:scale-105"
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                  {feature.icon}
+                </div>
+                <h5 className="text-xl font-bold mb-4 text-gray-900">{feature.title}</h5>
+                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Popular Tourism Routes Section */}
+      <section className="py-20 md:py-28 relative overflow-hidden">
+        {/* Glassy Background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1512453979448-43a2419029a0?q=80&w=2070')] bg-cover bg-center opacity-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-blue-50/90 to-indigo-50/95 backdrop-blur-sm"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center max-w-4xl mx-auto mb-20"
+          >
+            <span className="text-blue-600 font-semibold text-sm tracking-wider uppercase">POPULAR TOURISM ROUTES</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-3 mb-6">
+              Explore India's Most
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"> Loved Destinations</span>
+            </h2>
+            <p className="text-lg text-gray-600 leading-relaxed">Discover the most sought-after tourist destinations that showcase India's incredible diversity</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { from: 'Mumbai', to: 'Goa', price: '₹1,299', duration: '12h', description: 'Beach Paradise & Nightlife' },
+              { from: 'Delhi', to: 'Jaipur', price: '₹899', duration: '6h', description: 'Pink City & Royal Palaces' },
+              { from: 'Bangalore', to: 'Chennai', price: '₹799', duration: '5h', description: 'Silicon Valley to Coastal Gateway' },
+              { from: 'Hyderabad', to: 'Vijayawada', price: '₹699', duration: '4h 30m', description: 'Pearl City to Business Hub' },
+            ].map((route, index) => {
+              const routeImages = [
+                '/images/Buss.png',
+                '/images/Bus2.jpeg', 
+                '/images/Buss3.png',
+                '/images/Buss2.png'
+              ];
+              
+              return (
+              <motion.div 
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="bg-white/90 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-200 hover:border-gray-300 transform hover:-translate-y-2"
+              >
+                <div className="h-48 relative overflow-hidden bg-gray-100">
+                  <img
+                    src={routeImages[index]}
+                    alt={`${route.from} to ${route.to}`}
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/images/Buss.png';
+                    }}
+                  />
+                  <div className="absolute bottom-4 left-4 text-gray-900 bg-white/90 px-3 py-2 rounded-lg shadow-lg">
+                    <span className="text-xs font-medium">Starting from</span>
+                    <p className="text-xl font-bold">{route.price}</p>
+                  </div>
+                </div>
+                <div className="p-4 bg-gradient-to-b from-white to-blue-50">
+                  <div className="flex items-center justify-between mb-2">
+                    <h5 className="text-sm text-gray-900 font-bold">
+                      {route.from} <span className="text-blue-600">→</span> {route.to}
+                    </h5>
+                    <div className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold">
+                      TRENDING
+                    </div>
+                  </div>
+                  <div className="flex items-center text-gray-600 mb-3">
+                    <FiClock className="mr-2 text-blue-600" />
+                    <span className="text-sm font-medium">{route.duration}</span>
+                  </div>
+                  <div className="flex items-center text-xs text-gray-500 mb-3">
+                    <FiUsers className="mr-2" />
+                    <span>{route.description}</span>
+                  </div>
+                  <button className="mt-2 w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg text-sm" suppressHydrationWarning>
+                    Explore This Route
+                  </button>
+                </div>
+              </motion.div>
+              );
+            })}
+          </div>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-center mt-20"
+          >
+            <Link 
+              href="/routes" 
+              className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 text-lg transition-all duration-300 group"
+            >
+              View All Tourism Routes 
+              <FiArrowRight className="ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Premium Image Carousel Section */}
+      <section className="py-16 bg-gradient-to-br from-white via-blue-50 to-cyan-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <span className="text-blue-600 font-medium text-sm">GALLERY</span>
+            <h3 className="text-2xl md:text-3xl font-medium text-gray-900 mt-2 mb-4">Experience Our Journey</h3>
+            <p className="text-gray-600 text-sm leading-relaxed">Take a visual tour through our compartments and travel experiences</p>
+          </div>
+          
+          <div className="relative max-w-5xl mx-auto">
+            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={galleryImageIndex}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
+                  className="relative w-full h-full"
+                >
+                  <Image
+                    src={galleryImages[galleryImageIndex]}
+                    alt="Luxury Bus Experience"
+                    fill
+                    className="object-contain bg-gray-100"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                  
+                  {/* Overlay Content */}
+                  <motion.div 
+                    className="absolute bottom-8 left-8 right-8 text-white"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                  >
+                    <h4 className="text-2xl md:text-4xl font-bold mb-2">Premium Luxury Buses</h4>
+                    <p className="text-lg md:text-xl opacity-90">Travel in comfort and style with our state-of-the-art fleet</p>
+                  </motion.div>
+                </motion.div>
+              </AnimatePresence>
+              
+              {/* Navigation Arrows */}
+              <button 
+                onClick={() => setGalleryImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length)}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-md text-white p-3 rounded-full hover:bg-white/30 transition-all duration-300 hover:scale-110"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button 
+                onClick={() => setGalleryImageIndex((prev) => (prev + 1) % galleryImages.length)}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-md text-white p-3 rounded-full hover:bg-white/30 transition-all duration-300 hover:scale-110"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+            
+            {/* Thumbnail Navigation */}
+            <div className="flex justify-center mt-6 space-x-3">
+              {galleryImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setGalleryImageIndex(index)}
+                  className={`transition-all duration-300 ${
+                    index === galleryImageIndex ? 'bg-blue-600 w-8 h-3' : 'bg-gray-300 hover:bg-blue-400 w-3 h-3'
+                  } rounded-full`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-0 md:py-8 bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 text-gray-800 relative overflow-hidden">
+        <div className="absolute inset-0 bg-white/20"></div>
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <h2 className="text-3xl md:text-5xl font-bold mb-6">Ready to Travel With Us?</h2>
+          <p className="text-xl mb-10 max-w-3xl mx-auto text-gray-600 leading-relaxed">
+            Experience the comfort and luxury of our premium bus services. Book your next journey today!
           </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-6">
+            <Link 
+              href="/booking" 
+              className="bg-white text-blue-600 hover:bg-blue-50 font-semibold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Book Now
+            </Link>
+            <Link 
+              href="/contact" 
+              className="bg-transparent border-2 border-white text-black hover:bg-white hover:text-blue-700 font-semibold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105"
+            >
+              Contact Us
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </section>
     </div>
   );
 }
