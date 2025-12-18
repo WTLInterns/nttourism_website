@@ -78,8 +78,31 @@ export default function BookingPage() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    
+    // Validate required fields
+    if (!formData.name || !formData.phone || !formData.from || !formData.to || !formData.date) {
+      setSubmitMessage({ type: 'error', text: 'Please fill in all required fields' });
+      return;
+    }
+    
     setIsSubmitting(true);
     
+    // Format the WhatsApp message
+    const message = `*New Bus Booking Enquiry*%0A%0A` +
+      `*Name:* ${formData.name}%0A` +
+      `*Phone:* ${formData.phone}%0A` +
+      `*Email:* ${formData.email || 'Not provided'}%0A` +
+      `*Journey:* ${formData.from} to ${formData.to}%0A` +
+      `*Travel Date:* ${formData.date}%0A` +
+      `*Passengers:* ${formData.passengers}%0A` +
+      `*Bus Type:* ${formData.busType}%0A` +
+      `*Travel Class:* ${formData.travelClass}%0A%0A` +
+      `_This enquiry was sent from NT Tourism Website_`;
+    
+    // Open WhatsApp with pre-filled message
+    window.open(`https://wa.me/917972858515?text=${message}`, '_blank');
+    
+    // Also send to the original API endpoint if needed
     try {
       const response = await fetch('/api/booking-inquiry', {
         method: 'POST',
@@ -96,7 +119,7 @@ export default function BookingPage() {
           passengers: formData.passengers,
           busType: formData.busType,
           travelClass: formData.travelClass,
-          message: `Bus Type: ${formData.busType}, Travel Class: ${formData.travelClass}`
+          message: `New booking enquiry received. Please check WhatsApp for details.`
         }),
       });
 

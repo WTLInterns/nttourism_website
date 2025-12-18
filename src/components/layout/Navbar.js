@@ -29,7 +29,6 @@ const Navbar = () => {
     { name: 'Home', href: '/' },
     { name: 'Our Fleet', href: '/fleet' },
     { name: 'Services', href: '/services' },
-    { name: 'Routes', href: '/routes' },
     { name: 'About Us', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ];
