@@ -224,151 +224,159 @@ export default function Home() {
               {/* Glass Effect Overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-blue-50/40"></div>
               
-              <div className="relative z-10">
-                <form className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                  {/* Trip Type */}
-                  <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.1 }}
-                    className="lg:col-span-12"
-                  >
-                    <div className="flex bg-white/50 backdrop-blur-sm rounded-2xl p-1 border border-white/30">
-                      <button 
-                        type="button"
-                        onClick={() => setTripType('oneWay')}
-                        className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${tripType === 'oneWay' ? 'bg-white shadow-lg text-blue-600' : 'text-gray-600 hover:text-gray-800'}`}
-                      >
-                        One Way Journey
-                      </button>
-                      <button 
-                        type="button"
-                        onClick={() => setTripType('roundTrip')}
-                        className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${tripType === 'roundTrip' ? 'bg-white shadow-lg text-blue-600' : 'text-gray-600 hover:text-gray-800'}`}
-                      >
-                        Round Trip Journey
-                      </button>
-                    </div>
-                  </motion.div>
-
-                  {/* From */}
-                  <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="lg:col-span-3"
-                  >
-                    <label className="block text-sm font-bold text-gray-700 mb-3 flex items-center">
-                      <FiMapPin className="mr-2 text-blue-500" />
-                      Departure City
-                    </label>
-                    <div className="relative group">
-                      <select className="w-full px-5 py-4 rounded-2xl border border-white/40 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 bg-white/70 backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:bg-white/90 appearance-none font-medium">
-                        <option value="">Select Source</option>
-                        <option value="mumbai">Mumbai - City of Dreams</option>
-                        <option value="pune">Pune - Cultural Capital</option>
-                        <option value="nashik">Nashik - Wine City</option>
-                        <option value="bangalore">Bangalore - Silicon Valley</option>
-                        <option value="delhi">Delhi - Capital City</option>
-                      </select>
-                      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* To */}
-                  <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                    className="lg:col-span-3"
-                  >
-                    <label className="block text-sm font-bold text-gray-700 mb-3 flex items-center">
-                      <FiMapPin className="mr-2 text-green-500" />
-                      Destination
-                    </label>
-                    <div className="relative group">
-                      <select className="w-full px-5 py-4 rounded-2xl border border-white/40 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 bg-white/70 backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:bg-white/90 appearance-none font-medium">
-                        <option value="">Select Destination</option>
-                        <option value="goa">Goa - Beach Paradise</option>
-                        <option value="shirdi">Shirdi - Spiritual Center</option>
-                        <option value="ahmedabad">Ahmedabad - Heritage City</option>
-                        <option value="surat">Surat - Diamond City</option>
-                        <option value="jaipur">Jaipur - Pink City</option>
-                      </select>
-                      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* Departure Date */}
-                  <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
-                    className={`${tripType === 'roundTrip' ? 'lg:col-span-2' : 'lg:col-span-2'}`}
-                  >
-                    <label className="block text-sm font-bold text-gray-700 mb-3 flex items-center">
-                      <FiClock className="mr-2 text-blue-500" />
-                      {tripType === 'roundTrip' ? 'Departure Date' : 'Travel Date'}
-                    </label>
-                    <input 
-                      type="date" 
-                      className="w-full px-5 py-4 rounded-2xl border border-white/40 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 bg-white/70 backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:bg-white/90 font-medium"
-                      min={new Date().toISOString().split('T')[0]}
-                    />
-                  </motion.div>
-
-                  {/* Return Date - Only show for round trip */}
-                  {tripType === 'roundTrip' && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: 0.5 }}
-                      className="lg:col-span-2"
-                    >
-                      <label className="block text-sm font-bold text-gray-700 mb-3 flex items-center">
-                        <FiClock className="mr-2 text-green-500" />
-                        Return Date
-                      </label>
-                      <input 
-                        type="date" 
-                        className="w-full px-5 py-4 rounded-2xl border border-white/40 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 bg-white/70 backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:bg-white/90 font-medium"
-                        min={new Date().toISOString().split('T')[0]}
-                      />
-                    </motion.div>
-                  )}
-
-                  {/* Search Button */}
-                  <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.6 }}
-                    className={`${tripType === 'roundTrip' ? 'lg:col-span-2' : 'lg:col-span-4'} flex items-end`}
-                  >
-                    <motion.button 
-                      type="submit" 
-                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-[1.02] flex items-center justify-center"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <FiSearch className="mr-3 w-5 h-5" />
-                      Search Luxury Buses
-                    </motion.button>
-                  </motion.div>
-                </form>
+              <div className="relative z-10 overflow-x-auto">
+                <table className="w-full text-left rounded-2xl overflow-hidden">
+                  <thead className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+                    <tr className="bg-gradient-to-r from-blue-600 to-indigo-700">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">SR</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Bus Type</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">KM Charge</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Outstation Min Kms</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Driver DA on Outstation Trip</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Toll, Tax, Permit</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Extra KM Charges</th>
+                      <th className="px-4 py-3 text-right text-xs font-semibold text-white uppercase tracking-wider">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-100">
+                    {[
+                      {
+                        id: 1,
+                        busType: '12 Seater A/C',
+                        kmCharge: '₹38/km',
+                        outstationMinKms: '300 Kms',
+                        driverDA: '₹500',
+                        tollTaxPermit: 'As per actual',
+                        extraKmCharges: '₹38'
+                      },
+                      {
+                        id: 2,
+                        busType: '17 Seater A/C',
+                        kmCharge: '₹30/km',
+                        outstationMinKms: '300 Kms',
+                        driverDA: '₹500',
+                        tollTaxPermit: 'As per actual',
+                        extraKmCharges: '₹30'
+                      },
+                      {
+                        id: 3,
+                        busType: '17 Seater Non A/C',
+                        kmCharge: '₹27/km',
+                        outstationMinKms: '300 Kms',
+                        driverDA: '₹500',
+                        tollTaxPermit: 'As per actual',
+                        extraKmCharges: '₹27'
+                      },
+                      {
+                        id: 4,
+                        busType: '20 Seater A/C',
+                        kmCharge: '₹33/km',
+                        outstationMinKms: '300 Kms',
+                        driverDA: '₹500',
+                        tollTaxPermit: 'As per actual',
+                        extraKmCharges: '₹33'
+                      },
+                      {
+                        id: 5,
+                        busType: '20 Seater Non A/C',
+                        kmCharge: '₹30/km',
+                        outstationMinKms: '300 Kms',
+                        driverDA: '₹500',
+                        tollTaxPermit: 'As per actual',
+                        extraKmCharges: '₹30'
+                      },
+                      {
+                        id: 6,
+                        busType: '27 Seater A/C',
+                        kmCharge: '₹38/km',
+                        outstationMinKms: '300 Kms',
+                        driverDA: '₹500',
+                        tollTaxPermit: 'As per actual',
+                        extraKmCharges: '₹38'
+                      },
+                      {
+                        id: 7,
+                        busType: '27 Seater Non A/C',
+                        kmCharge: '₹35/km',
+                        outstationMinKms: '300 Kms',
+                        driverDA: '₹500',
+                        tollTaxPermit: 'As per actual',
+                        extraKmCharges: '₹35'
+                      },
+                      {
+                        id: 8,
+                        busType: '35 Seater A/C',
+                        kmCharge: '₹50/km',
+                        outstationMinKms: '300 Kms',
+                        driverDA: '₹500',
+                        tollTaxPermit: 'As per actual',
+                        extraKmCharges: '₹50'
+                      },
+                      {
+                        id: 9,
+                        busType: '35 Seater Non A/C',
+                        kmCharge: '₹46/km',
+                        outstationMinKms: '300 Kms',
+                        driverDA: '₹500',
+                        tollTaxPermit: 'As per actual',
+                        extraKmCharges: '₹46'
+                      },
+                      {
+                        id: 10,
+                        busType: '40 Seater A/C',
+                        kmCharge: '₹60/km',
+                        outstationMinKms: '300 Kms',
+                        driverDA: '₹500',
+                        tollTaxPermit: 'As per actual',
+                        extraKmCharges: '₹65'
+                      },
+                      {
+                        id: 11,
+                        busType: '40 Seater Non A/C',
+                        kmCharge: '₹65/km',
+                        outstationMinKms: '300 Kms',
+                        driverDA: '₹500',
+                        tollTaxPermit: 'As per actual',
+                        extraKmCharges: '₹60'
+                      }
+                    ].map((bus) => (
+                      <tr key={bus.id} className="hover:bg-gray-50 transition-colors border-b border-gray-100">
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{bus.id}</td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">{bus.busType}</div>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            {bus.kmCharge}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                          {bus.outstationMinKms}
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                          {bus.driverDA}
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                          {bus.tollTaxPermit}
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            {bus.extraKmCharges}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                          <Link 
+                            href="/booking"
+                            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-2 px-4 rounded-lg transition-all duration-300 inline-flex items-center text-xs"
+                          >
+                            <span>Book Now</span>
+                            <FiArrowRight className="ml-1" size={14} />
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </motion.div>
@@ -390,10 +398,10 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-4xl mx-auto mb-20"
           >
-            <span className="text-blue-600 font-semibold text-sm tracking-wider uppercase">WHY TRAVEL WITH US</span>
+            <span className="text-blue-600 font-semibold text-sm tracking-wider uppercase">Explore Our</span>
             <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mt-3 mb-6">
-              Unforgettable
-              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"> Travel Experiences</span>
+              Popular
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"> Routes</span>
             </h3>
             <p className="text-lg text-gray-600 leading-relaxed">Discover India's beauty with our premium tourism services, designed to make every journey memorable</p>
           </motion.div>
@@ -401,49 +409,61 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                icon: <FiShield className="w-8 h-8 text-blue-600" />,
-                title: 'Safe & Secure Travel',
-                description: 'Your safety is our top priority with GPS-tracked luxury buses, professional drivers, and 24/7 emergency support throughout your journey.'
+                image: '/images/Bhimashankar.webp',
+                title: 'Bhimashankar',
+                description: 'A spiritual retreat in the Sahyadri range, home to the Jyotirlinga temple and lush green forests. Perfect for trekkers and pilgrims alike.'
               },
               {
-                icon: <FiClock className="w-8 h-8 text-blue-600" />,
-                title: 'Punctual Departures',
-                description: 'We value your time with 95% on-time performance. Real-time tracking ensures you never miss a moment of your vacation.'
+                image: '/images/Lonavala.avif',
+                title: 'Lonavala',
+                description: 'The jewel of the Sahyadri ranges, famous for its scenic beauty, waterfalls, and delicious chikkis. A perfect weekend getaway from Mumbai and Pune.'
               },
               {
-                icon: <FiWifi className="w-8 h-8 text-blue-600" />,
-                title: 'Stay Connected',
-                description: 'Complimentary high-speed WiFi on all buses. Share your travel moments instantly with family and friends back home.'
+                image: '/images/Goa.jpg',
+                title: 'Goa Beaches',
+                description: 'Sun, sand, and sea - experience the vibrant beaches, Portuguese architecture, and exciting nightlife of India\'s party capital.'
               },
               {
-                icon: <FiCoffee className="w-8 h-8 text-blue-600" />,
-                title: 'Premium Comfort',
-                description: 'Luxury reclining seats, climate control, refreshments, and entertainment systems for a comfortable journey to your destination.'
+                image: '/images/Mahabaleshwar.jpg',
+                title: 'Mahabaleshwar',
+                description: 'Famous for its strawberry farms, beautiful viewpoints, and pleasant weather throughout the year. A perfect hill station getaway.'
               },
               {
-                icon: <FiUsers className="w-8 h-8 text-blue-600" />,
-                title: 'Expert Travel Guides',
-                description: 'Knowledgeable guides available for select routes. Learn about India\'s rich culture, history, and hidden gems.'
+                image: '/images/Matheran.jpg',
+                title: 'Matheran',
+                description: 'Asia\'s only automobile-free hill station, known for its pollution-free air, toy train, and breathtaking viewpoints.'
               },
               {
-                icon: <FiMapPin className="w-8 h-8 text-blue-600" />,
-                title: '100+ Destinations',
-                description: 'From pristine beaches to ancient temples, mountain retreats to vibrant cities - explore India\'s diverse landscapes with us.'
+                image: '/images/Alibaug.jpg',
+                title: 'Alibaug',
+                description: 'Famous for its beautiful beaches, historic forts, and water sports. A quick escape from Mumbai with a perfect blend of history and nature.'
               }
-            ].map((feature, index) => (
+            ].map((destination, index) => (
               <motion.div 
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white/70 backdrop-blur-lg p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/30 hover:border-blue-200 hover:scale-105"
+                className="group bg-white/70 backdrop-blur-lg rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/30 hover:border-blue-200 hover:scale-105 overflow-hidden"
               >
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
-                  {feature.icon}
+                <div className="relative h-48 w-full overflow-hidden">
+                  <Image 
+                    src={destination.image} 
+                    alt={destination.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover transform group-hover:scale-110 transition-transform duration-500"
+                    priority={index < 3} // Only preload first 3 images
+                  />
                 </div>
-                <h5 className="text-xl font-bold mb-4 text-gray-900">{feature.title}</h5>
-                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                <div className="p-6">
+                  <h5 className="text-xl font-bold mb-3 text-gray-900">{destination.title}</h5>
+                  <p className="text-gray-600 leading-relaxed mb-4">{destination.description}</p>
+                  <button className="text-blue-600 font-medium hover:text-blue-800 transition-colors border border-blue-600 px-4 py-2 rounded-full">
+                    Book Now {destination.title.split(' ')[0]} →
+                  </button>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -451,7 +471,7 @@ export default function Home() {
       </section>
 
       {/* Popular Tourism Routes Section */}
-      <section className="py-20 md:py-28 relative overflow-hidden">
+      <section id="popular-tourism-routes" className="py-20 md:py-28 relative overflow-hidden">
         {/* Glassy Background */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1512453979448-43a2419029a0?q=80&w=2070')] bg-cover bg-center opacity-10"></div>
@@ -476,10 +496,10 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { from: 'Mumbai', to: 'Goa', price: '₹1,299', duration: '12h', description: 'Beach Paradise & Nightlife' },
-              { from: 'Delhi', to: 'Jaipur', price: '₹899', duration: '6h', description: 'Pink City & Royal Palaces' },
-              { from: 'Bangalore', to: 'Chennai', price: '₹799', duration: '5h', description: 'Silicon Valley to Coastal Gateway' },
-              { from: 'Hyderabad', to: 'Vijayawada', price: '₹699', duration: '4h 30m', description: 'Pearl City to Business Hub' },
+              { from: 'Mumbai', to: 'Goa', duration: '12h', description: 'Beach Paradise & Nightlife' },
+              { from: 'Delhi', to: 'Jaipur', duration: '6h', description: 'Pink City & Royal Palaces' },
+              { from: 'Bangalore', to: 'Chennai',  duration: '5h', description: 'Silicon Valley to Coastal Gateway' },
+              { from: 'Hyderabad', to: 'Vijayawada', duration: '4h 30m', description: 'Pearl City to Business Hub' },
             ].map((route, index) => {
               const routeImages = [
                 '/images/Buss.png',
@@ -507,31 +527,25 @@ export default function Home() {
                       e.target.src = '/images/Buss.png';
                     }}
                   />
-                  <div className="absolute bottom-4 left-4 text-gray-900 bg-white/90 px-3 py-2 rounded-lg shadow-lg">
-                    <span className="text-xs font-medium">Starting from</span>
-                    <p className="text-xl font-bold">{route.price}</p>
-                  </div>
+                  
                 </div>
                 <div className="p-4 bg-gradient-to-b from-white to-blue-50">
-                  <div className="flex items-center justify-between mb-2">
-                    <h5 className="text-sm text-gray-900 font-bold">
-                      {route.from} <span className="text-blue-600">→</span> {route.to}
-                    </h5>
-                    <div className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold">
-                      TRENDING
-                    </div>
+                
+                  <div className="text-center mb-3">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      24+ Seater
+                    </span>
                   </div>
-                  <div className="flex items-center text-gray-600 mb-3">
-                    <FiClock className="mr-2 text-blue-600" />
-                    <span className="text-sm font-medium">{route.duration}</span>
+                  <hr className="my-3 border-gray-200" />
+                  <div className="text-xs text-gray-500 text-center mb-3">
+                    {route.description}
                   </div>
-                  <div className="flex items-center text-xs text-gray-500 mb-3">
-                    <FiUsers className="mr-2" />
-                    <span>{route.description}</span>
-                  </div>
-                  <button className="mt-2 w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg text-sm" suppressHydrationWarning>
-                    Explore This Route
-                  </button>
+                  <Link 
+                    href="/booking"
+                    className="mt-2 w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg text-sm flex justify-center items-center"
+                  >
+                    Book Now
+                  </Link>
                 </div>
               </motion.div>
               );

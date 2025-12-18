@@ -1,6 +1,6 @@
 'use client';
 
-import { FiAward, FiMap, FiUsers, FiShield } from 'react-icons/fi';
+import { FiAward, FiMap, FiUsers, FiShield, FiClock, FiMapPin } from 'react-icons/fi';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
@@ -227,69 +227,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="py-12 bg-white/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold">MEET OUR TEAM</span>
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mt-3 mb-4">Dedicated Professionals</h3>
-            <p className="text-gray-600 text-sm">Our experienced team committed to excellence in travel service.</p>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              {
-                name: 'Rajesh Kumar',
-                role: 'Founder & CEO',
-                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face'
-              },
-              {
-                name: 'Priya Sharma',
-                role: 'Operations Head',
-                image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face'
-              },
-              {
-                name: 'Amit Patel',
-                role: 'Fleet Manager',
-                image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face'
-              },
-              {
-                name: 'Anjali Mehta',
-                role: 'Customer Service Head',
-                image: 'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=200&h=200&fit=crop&crop=face'
-              }
-            ].map((member, index) => (
-              <motion.div 
-                key={index}
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.5, type: "spring", stiffness: 100 }}
-                whileHover={{ y: -3, scale: 1.05 }}
-                className="text-center"
-              >
-                <div className="relative w-20 h-20 mx-auto mb-3">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full" />
-                  <div className="absolute inset-1 bg-white rounded-full overflow-hidden">
-                    <Image
-                      src={member.image}
-                      alt={member.name}
-                      fill
-                      className="object-cover"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=3B82F6&color=fff&size=200`;
-                      }}
-                    />
-                  </div>
-                </div>
-                <h4 className="text-sm font-semibold text-gray-900">{member.name}</h4>
-                <p className="text-xs text-blue-600 font-medium">{member.role}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* CTA Section */}
       <section className="py-20 bg-white text-gray-900 relative overflow-hidden">
