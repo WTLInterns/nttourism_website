@@ -1,6 +1,6 @@
 'use client';
 
-import { FiAward, FiMap, FiUsers, FiShield } from 'react-icons/fi';
+import { FiAward, FiMap, FiUsers, FiShield, FiClock, FiMapPin } from 'react-icons/fi';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
@@ -236,55 +236,130 @@ export default function AboutPage() {
             <p className="text-gray-600 text-sm">Our experienced team committed to excellence in travel service.</p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[ 
               {
-                name: 'Rajesh Kumar',
-                role: 'Founder & CEO',
-                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face'
+                name: 'Vikram Singh',
+                role: 'Senior Driver',
+                experience: '12+ Years',
+                routes: 'Mumbai-Goa, Mumbai-Pune',
+                image: 'https://randomuser.me/api/portraits/men/32.jpg'
               },
               {
-                name: 'Priya Sharma',
-                role: 'Operations Head',
-                image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face'
+                name: 'Ramesh Iyer',
+                role: 'Luxury Coach Driver',
+                experience: '15+ Years',
+                routes: 'Delhi-Jaipur, Delhi-Chandigarh',
+                image: 'https://randomuser.me/api/portraits/men/44.jpg'
               },
               {
-                name: 'Amit Patel',
-                role: 'Fleet Manager',
-                image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face'
+                name: 'Suresh Kumar',
+                role: 'Night Service Specialist',
+                experience: '10+ Years',
+                routes: 'Bangalore-Chennai, Bangalore-Hyderabad',
+                image: 'https://randomuser.me/api/portraits/men/67.jpg'
               },
               {
-                name: 'Anjali Mehta',
-                role: 'Customer Service Head',
-                image: 'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=200&h=200&fit=crop&crop=face'
+                name: 'Mahesh Patel',
+                role: 'Mountain Route Expert',
+                experience: '14+ Years',
+                routes: 'Dehradun-Delhi, Manali-Chandigarh',
+                image: 'https://randomuser.me/api/portraits/men/22.jpg'
               }
-            ].map((member, index) => (
+            ].map((driver, index) => (
               <motion.div 
                 key={index}
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                className={`group relative flex flex-col items-center bg-white rounded-2xl p-6 overflow-hidden transition-all duration-300
+                  border-2 ${
+                    index % 4 === 0 ? 'border-blue-400 hover:shadow-lg hover:shadow-blue-100' : 
+                    index % 4 === 1 ? 'border-green-400 hover:shadow-lg hover:shadow-green-100' :
+                    index % 4 === 2 ? 'border-amber-400 hover:shadow-lg hover:shadow-amber-100' :
+                    'border-purple-400 hover:shadow-lg hover:shadow-purple-100'
+                  }`}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.5, type: "spring", stiffness: 100 }}
-                whileHover={{ y: -3, scale: 1.05 }}
-                className="text-center"
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                whileHover={{ y: -5 }}
               >
-                <div className="relative w-20 h-20 mx-auto mb-3">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full" />
-                  <div className="absolute inset-1 bg-white rounded-full overflow-hidden">
+                {/* Decorative corner elements */}
+                <div className={`absolute -top-6 -right-6 w-12 h-12 rounded-full ${
+                  index % 4 === 0 ? 'bg-blue-100' : 
+                  index % 4 === 1 ? 'bg-green-100' :
+                  index % 4 === 2 ? 'bg-amber-100' : 'bg-purple-100'
+                }`}></div>
+                
+                <div className="relative z-10 flex flex-col items-center">
+                  <div className={`relative w-32 h-32 mb-6 rounded-full overflow-hidden border-4 ${
+                    index % 4 === 0 ? 'border-blue-200' : 
+                    index % 4 === 1 ? 'border-green-200' :
+                    index % 4 === 2 ? 'border-amber-200' : 'border-purple-200'
+                  } group-hover:scale-105 transition-transform duration-300`}>
                     <Image
-                      src={member.image}
-                      alt={member.name}
+                      src={driver.image}
+                      alt={driver.name}
                       fill
                       className="object-cover"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=3B82F6&color=fff&size=200`;
+                        e.target.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(driver.name) + '&background=random';
                       }}
                     />
                   </div>
+                  
+                  <div className="text-center">
+                    <h4 className="text-lg font-bold text-gray-800 mb-1">{driver.name}</h4>
+                    <p className={`text-sm font-medium mb-3 ${
+                      index % 4 === 0 ? 'text-blue-600' : 
+                      index % 4 === 1 ? 'text-green-600' :
+                      index % 4 === 2 ? 'text-amber-600' : 'text-purple-600'
+                    }`}>
+                      {driver.role}
+                    </p>
+                    
+                    <div className="mb-2">
+                      <div className="flex items-center justify-center text-gray-600 text-sm mb-1">
+                        <FiClock className={`mr-2 ${
+                          index % 4 === 0 ? 'text-blue-500' : 
+                          index % 4 === 1 ? 'text-green-500' :
+                          index % 4 === 2 ? 'text-amber-500' : 'text-purple-500'
+                        }`} />
+                        <span>{driver.experience} Experience</span>
+                      </div>
+                      <div className="flex items-start justify-center text-gray-600 text-xs">
+                        <FiMapPin className={`mt-0.5 mr-1 flex-shrink-0 ${
+                          index % 4 === 0 ? 'text-blue-500' : 
+                          index % 4 === 1 ? 'text-green-500' :
+                          index % 4 === 2 ? 'text-amber-500' : 'text-purple-500'
+                        }`} />
+                        <span className="text-center">{driver.routes}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-center space-x-3 mt-4">
+                      <button className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+                        index % 4 === 0 ? 'bg-blue-50 hover:bg-blue-100 text-blue-600' : 
+                        index % 4 === 1 ? 'bg-green-50 hover:bg-green-100 text-green-600' :
+                        index % 4 === 2 ? 'bg-amber-50 hover:bg-amber-100 text-amber-600' : 
+                        'bg-purple-50 hover:bg-purple-100 text-purple-600'
+                      }`}>
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+                        </svg>
+                      </button>
+                      <button className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+                        index % 4 === 0 ? 'bg-blue-50 hover:bg-blue-100 text-blue-600' : 
+                        index % 4 === 1 ? 'bg-green-50 hover:bg-green-100 text-green-600' :
+                        index % 4 === 2 ? 'bg-amber-50 hover:bg-amber-100 text-amber-600' : 
+                        'bg-purple-50 hover:bg-purple-100 text-purple-600'
+                      }`}>
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.964-.94 1.161-.174.196-.347.221-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.795-1.484-1.784-1.66-2.087-.173-.297-.018-.458.132-.606.136-.133.296-.347.445-.52.146-.174.194-.298.29-.497.1-.198.05-.371-.025-.52-.075-.149-.669-1.612-.915-2.207-.242-.579-.487-.5-.669-.508-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.078 4.487.709.306 1.262.489 1.694.625.712.226 1.36.194 1.87.118.57-.08 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.422 6.923h-.004a9.6 9.6 0 01-5.328-1.611c-2.82-1.92-4.32-5.13-4.32-8.65 0-3.087 1.994-5.93 5.2-6.96a9.86 9.86 0 013.8-.39 9.876 9.876 0 015.7 2.92 9.9 9.9 0 012.9 7.08c0 3.52-1.5 6.73-4.32 8.65a9.6 9.6 0 01-5.628 1.61z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <h4 className="text-sm font-semibold text-gray-900">{member.name}</h4>
-                <p className="text-xs text-blue-600 font-medium">{member.role}</p>
               </motion.div>
             ))}
           </div>

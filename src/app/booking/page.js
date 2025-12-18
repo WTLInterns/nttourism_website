@@ -588,9 +588,12 @@ export default function BookingPage() {
                   <FiClock className="mr-2 text-blue-600" />
                   <span>Daily Service Available</span>
                 </div>
-                <button className="w-full bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
+                <Link 
+                  href="/fleet"
+                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 flex justify-center items-center"
+                >
                   View Buses
-                </button>
+                </Link>
               </div>
             ))}
           </div>

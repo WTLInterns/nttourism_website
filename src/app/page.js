@@ -360,8 +360,14 @@ export default function Home() {
                     className={`${tripType === 'roundTrip' ? 'lg:col-span-2' : 'lg:col-span-4'} flex items-end`}
                   >
                     <motion.button 
-                      type="submit" 
-                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-[1.02] flex items-center justify-center"
+                      type="button"
+                      onClick={() => {
+                        const element = document.getElementById('popular-tourism-routes');
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -452,7 +458,7 @@ export default function Home() {
       </section>
 
       {/* Popular Tourism Routes Section */}
-      <section className="py-20 md:py-28 relative overflow-hidden">
+      <section id="popular-tourism-routes" className="py-20 md:py-28 relative overflow-hidden">
         {/* Glassy Background */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1512453979448-43a2419029a0?q=80&w=2070')] bg-cover bg-center opacity-10"></div>
@@ -530,9 +536,12 @@ export default function Home() {
                     <FiUsers className="mr-2" />
                     <span>{route.description}</span>
                   </div>
-                  <button className="mt-2 w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg text-sm" suppressHydrationWarning>
+                  <Link 
+                    href="/booking"
+                    className="mt-2 w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg text-sm flex justify-center items-center"
+                  >
                     Explore This Route
-                  </button>
+                  </Link>
                 </div>
               </motion.div>
               );

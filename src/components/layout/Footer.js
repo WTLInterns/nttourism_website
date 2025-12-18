@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { FiFacebook, FiTwitter, FiInstagram, FiLinkedin, FiMapPin, FiPhone, FiMail, FiClock, FiMessageSquare } from 'react-icons/fi';
+import { FiFacebook, FiInstagram, FiLinkedin, FiMapPin, FiPhone, FiMail, FiClock } from 'react-icons/fi';
+import { IoLogoWhatsapp } from 'react-icons/io5';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -26,7 +27,7 @@ const Footer = () => {
 
   const socialLinks = [
     { 
-      icon: <FiMessageSquare />, 
+      icon: <IoLogoWhatsapp className="text-2xl text-green-500" />, 
       href: 'https://wa.me/917972858515?text=Hello!%20I%27m%20interested%20in%20your%20tourism%20services.%20Could%20you%20please%20provide%20information%20about%3A%0A%0A%F0%9F%93%85%20Available%20tour%20packages%0A%F0%9F%9A%8C%20Vehicle%20options%20and%20pricing%0A%F0%9F%93%8D%20Popular%20tourist%20destinations%0A%F0%9F%8F%A8%20Hotel%20partnerships%0A%0AThank%20you!', 
       label: 'WhatsApp' 
     },
