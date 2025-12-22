@@ -100,7 +100,7 @@ export default function Home() {
             className="text-left max-w-4xl"
           >
             {/* Trust Badge */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -108,7 +108,7 @@ export default function Home() {
             >
               <FiShield className="w-5 h-5 text-yellow-400 mr-2" />
               <span className="text-white font-medium">SINCE 2024 • 50,000+ HAPPY TRAVELERS</span>
-            </motion.div>
+            </motion.div> */}
             
             <motion.h1 
               initial={{ opacity: 0, y: 30 }}
@@ -121,7 +121,7 @@ export default function Home() {
               </span>
               <br />
               <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent drop-shadow-2xl">
-                India With Us
+                India With Urbania
               </span>
             </motion.h1>
             
@@ -243,7 +243,7 @@ export default function Home() {
                       {
                         id: 1,
                         busType: '12 Seater A/C',
-                        kmCharge: '₹38/km',
+                        kmCharge: '₹25/km',
                         outstationMinKms: '300 Kms',
                         driverDA: '₹500',
                         tollTaxPermit: 'As per actual',
@@ -252,7 +252,7 @@ export default function Home() {
                       {
                         id: 2,
                         busType: '17 Seater A/C',
-                        kmCharge: '₹30/km',
+                        kmCharge: '₹26/km',
                         outstationMinKms: '300 Kms',
                         driverDA: '₹500',
                         tollTaxPermit: 'As per actual',
@@ -261,7 +261,7 @@ export default function Home() {
                       {
                         id: 3,
                         busType: '17 Seater Non A/C',
-                        kmCharge: '₹27/km',
+                        kmCharge: '₹22/km',
                         outstationMinKms: '300 Kms',
                         driverDA: '₹500',
                         tollTaxPermit: 'As per actual',
@@ -270,7 +270,7 @@ export default function Home() {
                       {
                         id: 4,
                         busType: '20 Seater A/C',
-                        kmCharge: '₹33/km',
+                        kmCharge: '₹28/km',
                         outstationMinKms: '300 Kms',
                         driverDA: '₹500',
                         tollTaxPermit: 'As per actual',
@@ -279,7 +279,7 @@ export default function Home() {
                       {
                         id: 5,
                         busType: '20 Seater Non A/C',
-                        kmCharge: '₹30/km',
+                        kmCharge: '₹25/km',
                         outstationMinKms: '300 Kms',
                         driverDA: '₹500',
                         tollTaxPermit: 'As per actual',
@@ -297,7 +297,7 @@ export default function Home() {
                       {
                         id: 7,
                         busType: '27 Seater Non A/C',
-                        kmCharge: '₹35/km',
+                        kmCharge: '₹32/km',
                         outstationMinKms: '300 Kms',
                         driverDA: '₹500',
                         tollTaxPermit: 'As per actual',
@@ -306,7 +306,7 @@ export default function Home() {
                       {
                         id: 8,
                         busType: '35 Seater A/C',
-                        kmCharge: '₹50/km',
+                        kmCharge: '₹55/km',
                         outstationMinKms: '300 Kms',
                         driverDA: '₹500',
                         tollTaxPermit: 'As per actual',
@@ -315,7 +315,7 @@ export default function Home() {
                       {
                         id: 9,
                         busType: '35 Seater Non A/C',
-                        kmCharge: '₹46/km',
+                        kmCharge: '₹40/km',
                         outstationMinKms: '300 Kms',
                         driverDA: '₹500',
                         tollTaxPermit: 'As per actual',
@@ -323,8 +323,8 @@ export default function Home() {
                       },
                       {
                         id: 10,
-                        busType: '40 Seater A/C',
-                        kmCharge: '₹60/km',
+                        busType: '45 Seater A/C',
+                        kmCharge: '₹65/km',
                         outstationMinKms: '300 Kms',
                         driverDA: '₹500',
                         tollTaxPermit: 'As per actual',
@@ -332,8 +332,8 @@ export default function Home() {
                       },
                       {
                         id: 11,
-                        busType: '40 Seater Non A/C',
-                        kmCharge: '₹65/km',
+                        busType: '45 Seater Non A/C',
+                        kmCharge: '₹48/km',
                         outstationMinKms: '300 Kms',
                         driverDA: '₹500',
                         tollTaxPermit: 'As per actual',
@@ -533,7 +533,9 @@ export default function Home() {
                 
                   <div className="text-center mb-3">
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      24+ Seater
+                      {index === 0 ? '17 + D Seater' : 
+                       index === 1 ? '32 + D Seater' : 
+                       index === 2 ? '26 + D Seater' : '16 + D Seater'}
                     </span>
                   </div>
                   <hr className="my-3 border-gray-200" />

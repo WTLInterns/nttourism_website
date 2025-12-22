@@ -52,7 +52,7 @@ export const buses = [
     amenities: ['WiFi', 'Charging Ports', 'Blankets', 'Pillows', 'Water Bottles', 'Entertainment'],
     rating: 4.9,
     pricePerKm: 40,
-    image: '/images/Bus2.jpg',
+    image: '/images/Bus2.jpeg',
     description: 'Ultra-luxury sleeper coach with premium bedding and entertainment options.'
   },
   {

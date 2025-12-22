@@ -34,22 +34,20 @@ const Navbar = () => {
   ];
 
   return (
-    <header 
-      className={`fixed w-full top-0 z-50 transition-all duration-500 ${
-        scrolled ? 'py-0' : 'py-2'
-      }`}
+    <header
+      className={`fixed w-full top-0 z-50 transition-all duration-500 ${scrolled ? 'py-0' : 'py-2'
+        }`}
     >
       {/* Main Navigation - Premium Glass Design */}
-      <nav className={`mx-4 rounded-2xl transition-all duration-500 ${
-        scrolled 
-          ? 'bg-white/80 backdrop-blur-xl shadow-2xl border border-white/20' 
+      <nav className={`mx-4 rounded-2xl transition-all duration-500 ${scrolled
+          ? 'bg-white/80 backdrop-blur-xl shadow-2xl border border-white/20'
           : 'bg-white/60 backdrop-blur-lg shadow-lg border border-white/10'
-      }`}>
+        }`}>
         <div className="container mx-auto px-5">
           <div className="flex justify-between items-center h-16">
             {/* Logo - Enhanced */}
             <Link href="/" className="flex items-center group">
-              <motion.div 
+              <motion.div
                 className="h-12 w-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center text-white font-bold text-2xl mr-3 shadow-lg backdrop-blur-sm"
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 whileTap={{ scale: 0.95 }}
@@ -71,7 +69,7 @@ const Navbar = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Link 
+                  <Link
                     href={link.href}
                     className="px-4 py-2 text-gray-700 hover:text-blue-600 font-semibold transition-all duration-300 rounded-lg hover:bg-blue-50 relative group"
                   >
@@ -80,11 +78,11 @@ const Navbar = () => {
                   </Link>
                 </motion.div>
               ))}
-              
+
               {/* Call Now Button */}
               <div className="flex items-center space-x-3">
                 {/* Call Button */}
-                <motion.a 
+                <motion.a
                   href="tel:+917972858515"
                   className="group relative px-5 py-2.5 bg-gradient-to-r from-blue-100 to-blue-50 border border-blue-200 text-blue-700 font-bold rounded-xl transition-all duration-300 flex items-center gap-2 overflow-hidden"
                   whileHover={{ y: -2 }}
@@ -96,9 +94,9 @@ const Navbar = () => {
                   </span>
                   <span className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-blue-400/5 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 </motion.a>
-                
+
                 {/* WhatsApp Button */}
-                <motion.a 
+                <motion.a
                   href="https://wa.me/917972858515?text=Hello!%20I%27m%20interested%20in%20your%20tourism%20services.%20Could%20you%20please%20provide%20information%20about%3A%0A%0A%F0%9F%93%85%20Available%20tour%20packages%0A%F0%9F%9A%8C%20Vehicle%20options%20and%20pricing%0A%F0%9F%93%8D%20Popular%20tourist%20destinations%0A%F0%9F%8F%A8%20Hotel%20partnerships%0A%0AThank%20you!"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -113,22 +111,19 @@ const Navbar = () => {
                   </span>
                   <span className="absolute inset-0 bg-gradient-to-r from-green-600/5 to-green-400/5 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 </motion.a>
-                
+
                 {/* Book Now Button */}
-                <Link href="/booking">
-                  <motion.button
-                    className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden group"
+                <Link
+                  href="/booking"
+                  className="block"
+                >
+                  <motion.span
+                    className="inline-block px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden group"
                     whileHover={{ y: -2, scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <span className="relative z-10 flex items-center gap-2">
-                      <span className="text-sm">Book Now</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                    </span>
-                    <span className="absolute inset-0 bg-gradient-to-r from-blue-700/20 to-blue-900/20 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                  </motion.button>
+                    Book Now
+                  </motion.span>
                 </Link>
               </div>
             </div>
@@ -156,7 +151,7 @@ const Navbar = () => {
                   <span>Chat</span>
                 </motion.a>
               </div>
-              
+
               <motion.button
                 onClick={() => setIsOpen(!isOpen)}
                 className="text-gray-700 hover:text-blue-600 focus:outline-none p-2 rounded-lg hover:bg-blue-50 transition-colors"
@@ -171,7 +166,7 @@ const Navbar = () => {
           {/* Mobile Navigation - Enhanced with Animation */}
           <AnimatePresence>
             {isOpen && (
-              <motion.div 
+              <motion.div
                 className="lg:hidden bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl mt-2 mb-4 overflow-hidden border border-gray-200"
                 initial={{ opacity: 0, y: -20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -195,7 +190,7 @@ const Navbar = () => {
                       </Link>
                     </motion.div>
                   ))}
-                  
+
                   {/* Book Now Button Mobile */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
@@ -209,7 +204,7 @@ const Navbar = () => {
                       </button>
                     </Link>
                   </motion.div>
-                  
+
                   {/* Contact Info Mobile */}
                   <div className="mt-4 pt-4 border-t-2 border-gray-100">
                     <div className="space-y-3 px-2">
@@ -250,11 +245,11 @@ const Navbar = () => {
           </AnimatePresence>
         </div>
       </nav>
-      
+
       {/* Booking Inquiry Modal */}
-      <BookingInquiryModal 
-        isOpen={showInquiryModal} 
-        onClose={() => setShowInquiryModal(false)} 
+      <BookingInquiryModal
+        isOpen={showInquiryModal}
+        onClose={() => setShowInquiryModal(false)}
       />
     </header>
   );

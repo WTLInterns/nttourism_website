@@ -1,26 +1,31 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiCalendar, FiMapPin, FiUsers, FiClock, FiWifi, FiShield, FiCoffee, FiSearch, FiChevronDown, FiCheck, FiStar } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 export default function BookingPage() {
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     from: '',
     to: '',
     date: '',
+    returnDate: '',
+    isRoundTrip: false,
     passengers: '1',
     busType: 'all',
     travelClass: 'economy',
     name: '',
     email: '',
     phone: ''
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
 
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [selectedBus, setSelectedBus] = useState(null);
+  // Removed duplicate isRoundTrip state since we're using it in formData
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
@@ -78,72 +83,108 @@ export default function BookingPage() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    
-    // Validate required fields
-    if (!formData.name || !formData.phone || !formData.from || !formData.to || !formData.date) {
-      setSubmitMessage({ type: 'error', text: 'Please fill in all required fields' });
-      return;
-    }
-    
-    setIsSubmitting(true);
-    
-    // Format the WhatsApp message
-    const message = `*New Bus Booking Enquiry*%0A%0A` +
-      `*Name:* ${formData.name}%0A` +
-      `*Phone:* ${formData.phone}%0A` +
-      `*Email:* ${formData.email || 'Not provided'}%0A` +
-      `*Journey:* ${formData.from} to ${formData.to}%0A` +
-      `*Travel Date:* ${formData.date}%0A` +
-      `*Passengers:* ${formData.passengers}%0A` +
-      `*Bus Type:* ${formData.busType}%0A` +
-      `*Travel Class:* ${formData.travelClass}%0A%0A` +
-      `_This enquiry was sent from NT Tourism Website_`;
-    
-    // Open WhatsApp with pre-filled message
-    window.open(`https://wa.me/917972858515?text=${message}`, '_blank');
-    
-    // Also send to the original API endpoint if needed
+
     try {
+      // Validate required fields
+      const requiredFields = {
+        name: 'Full Name',
+        phone: 'Phone Number',
+        from: 'Departure City',
+        to: 'Destination City',
+        date: 'Travel Date'
+      };
+
+      const missingFields = Object.entries(requiredFields)
+        .filter(([key]) => !formData[key])
+        .map(([_, label]) => label);
+
+      if (missingFields.length > 0) {
+        setSubmitMessage({
+          type: 'error',
+          text: `Please fill in all required fields: ${missingFields.join(', ')}`
+        });
+        return;
+      }
+
+      // Validate return date if round trip is selected
+      if (formData.isRoundTrip && !formData.returnDate) {
+        setSubmitMessage({
+          type: 'error',
+          text: 'Please select return date for round trip'
+        });
+        return;
+      }
+
+      setIsSubmitting(true);
+
+      // Format the WhatsApp message
+      let message = `*New ${formData.isRoundTrip ? 'Round Trip' : 'One Way'} Bus Booking Enquiry*%0A%0A` +
+        `*Name:* ${formData.name}%0A` +
+        `*Phone:* ${formData.phone}%0A` +
+        `*Email:* ${formData.email || 'Not provided'}%0A` +
+        `*Journey:* ${formData.from} to ${formData.to}%0A` +
+        `*Trip Type:* ${formData.isRoundTrip ? 'Round Trip' : 'One Way'}%0A` +
+        `*Departure Date:* ${formData.date}%0A`;
+
+      if (formData.isRoundTrip) {
+        message += `*Return Date:* ${formData.returnDate}%0A`;
+      }
+
+      message += `*Passengers:* ${formData.passengers}%0A` +
+        `*Bus Type:* ${formData.busType}%0A` +
+        `*Travel Class:* ${formData.travelClass}%0A%0A` +
+        `_This enquiry was sent from NT Tourism Website_`;
+
+      // Open WhatsApp with pre-filled message
+      window.open(`https://wa.me/917972858515?text=${message}`, '_blank');
+
+      // Send to API endpoint
       const response = await fetch('/api/booking-inquiry', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
           from: formData.from,
           to: formData.to,
-          travelDate: formData.date,
+          date: formData.date,
+          returnDate: formData.returnDate,
           passengers: formData.passengers,
           busType: formData.busType,
           travelClass: formData.travelClass,
-          message: `New booking enquiry received. Please check WhatsApp for details.`
-        }),
+          isRoundTrip: formData.isRoundTrip,
+          message: `New ${formData.isRoundTrip ? 'Round Trip' : 'One Way'} booking enquiry from ${formData.from} to ${formData.to} for ${formData.passengers} passenger(s).`
+        })
       });
 
       const result = await response.json();
-      
-      if (response.ok) {
-        setSubmitMessage('Your enquiry has been sent successfully! We will contact you soon.');
-        // Reset form
-        setFormData({
-          from: '',
-          to: '',
-          date: '',
-          passengers: '1',
-          busType: 'all',
-          travelClass: 'economy',
-          name: '',
-          email: '',
-          phone: ''
-        });
-      } else {
-        setSubmitMessage(result.error || 'Failed to send enquiry. Please try again.');
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to send enquiry');
       }
+
+      // On success
+      setSubmitMessage({
+        type: 'success',
+        text: 'Your enquiry has been sent successfully! We will contact you soon.'
+      });
+
+      // Reset form
+      setFormData({
+        ...initialFormData,
+        isRoundTrip: false,
+        passengers: '1',
+        busType: 'all',
+        travelClass: 'economy'
+      });
+
     } catch (error) {
-      setSubmitMessage('Failed to send enquiry. Please try again.');
+      console.error('Error submitting form:', error);
+      setSubmitMessage({
+        type: 'error',
+        text: error.message || 'Failed to send enquiry. Please try again.'
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -164,113 +205,6 @@ export default function BookingPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section - Premium Tourism Booking */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-blue-50 to-cyan-50">
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1488646953014-85cb44e25828b?q=80&w=2070')] bg-cover bg-center opacity-10"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-blue-50/40 to-cyan-50/60"></div>
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-cyan-200/20 rounded-full blur-3xl animate-pulse"></div>
-        </div>
-        
-        <div className="container mx-auto px-4 relative z-10 pt-20">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="text-center max-w-6xl mx-auto"
-          >
-            {/* Trust Badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="inline-flex items-center px-6 py-3 bg-white/60 backdrop-blur-lg rounded-full border border-white/30 mb-8"
-            >
-              <FiShield className="w-5 h-5 text-blue-600 mr-2" />
-              <span className="text-gray-700 text-sm font-medium">Premium Tourism Booking • Instant Confirmation</span>
-            </motion.div>
-            
-            <motion.h1 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.3 }}
-              className="text-4xl md:text-6xl lg:text-7xl font-medium mb-6 leading-tight"
-            >
-              <span className="text-gray-900">
-                Book Your Dream
-              </span>
-              <br />
-              <span className="text-blue-600">
-                Journey Today
-              </span>
-            </motion.h1>
-            
-            <motion.p 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.4 }}
-              className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-12"
-            >
-              Reserve your seat on India's most comfortable luxury buses and explore incredible destinations 
-              with premium tourism experiences tailored just for you.
-            </motion.p>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.5 }}
-              className="flex flex-col sm:flex-row justify-center gap-6"
-            >
-              <Link 
-                href="#booking-form"
-                className="group relative px-10 py-4 bg-gradient-to-r from-blue-500 to-cyan-600 text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-blue-500/25 hover:scale-105"
-              >
-                <span className="relative z-10 flex items-center">
-                  <FiSearch className="mr-3 w-5 h-5" />
-                  Book Your Trip
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-700 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </Link>
-              
-              <Link 
-                href="/"
-                className="group px-10 py-4 bg-white/60 backdrop-blur-lg border-2 border-white/30 text-gray-700 font-medium rounded-full transition-all duration-300 hover:bg-white/80 hover:scale-105"
-              >
-                <span className="flex items-center">
-                  <FiMapPin className="mr-3 w-5 h-5" />
-                  View Routes
-                </span>
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-        
-        {/* Scroll Indicator */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-        >
-          <div className="flex flex-col items-center text-gray-500">
-            <span className="text-sm mb-2">Book Your Journey</span>
-            <motion.div 
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-6 h-10 border-2 border-gray-300 rounded-full flex justify-center"
-            >
-              <motion.div 
-                animate={{ y: [0, 12, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-1 h-3 bg-gray-400 rounded-full mt-2"
-              ></motion.div>
-            </motion.div>
-          </div>
-        </motion.div>
-      </section>
-
       {/* Search Form */}
       <section className="py-20 bg-gradient-to-br from-white via-blue-50 to-cyan-50">
         <div className="container mx-auto px-4">
@@ -278,205 +212,255 @@ export default function BookingPage() {
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/50 relative overflow-hidden">
               {/* Background Pattern */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 to-transparent"></div>
-              
+
               <div className="relative z-10">
                 <div className="text-center mb-8">
                   <h3 className="text-2xl font-medium text-gray-900 mb-3">Travel Enquiry Form</h3>
                   <p className="text-gray-600">Fill in your details and we'll contact you with the best travel options</p>
                 </div>
-              <form onSubmit={handleSearch} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                      <FiUsers className="mr-2 text-blue-600" />
-                      Full Name *
-                    </label>
-                    <div className="relative group">
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400"
-                        placeholder="Enter your full name"
-                        required
-                      />
+
+                <form onSubmit={handleSearch} className="space-y-6">
+                  {/* Trip Type Selection */}
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Trip Type</label>
+                      <div className="flex space-x-2">
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, isRoundTrip: false })}
+                          className={`flex-1 py-3 px-4 rounded-lg border ${!formData.isRoundTrip ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'} transition-colors`}
+                        >
+                          One Way
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, isRoundTrip: true })}
+                          className={`flex-1 py-3 px-4 rounded-lg border ${formData.isRoundTrip ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'} transition-colors`}
+                        >
+                          Round Trip
+                        </button>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                      <FiSearch className="mr-2 text-blue-600" />
-                      Email Address *
-                    </label>
-                    <div className="relative group">
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400"
-                        placeholder="your.email@example.com"
-                        required
-                      />
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                    <div className="relative">
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <FiUsers className="mr-2 text-blue-600" />
+                        Full Name *
+                      </label>
+                      <div className="relative group">
+                        <input
+                          type="text"
+                          name="name"
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400"
+                          placeholder="Enter your full name"
+                          required
+                        />
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                      <FiUsers className="mr-2 text-blue-600" />
-                      Phone Number *
-                    </label>
-                    <div className="relative group">
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400"
-                        placeholder="+91 98765 43210"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                      <FiMapPin className="mr-2 text-blue-600" />
-                      From *
-                    </label>
-                    <div className="relative group">
-                      <input
-                        type="text"
-                        name="from"
-                        value={formData.from}
-                        onChange={(e) => setFormData({...formData, from: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400"
-                        placeholder="Departure City"
-                        required
-                      />
+                    <div className="relative">
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <FiSearch className="mr-2 text-blue-600" />
+                        Email Address *
+                      </label>
+                      <div className="relative group">
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400"
+                          placeholder="your.email@example.com"
+                          required
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                      <FiMapPin className="mr-2 text-green-600" />
-                      To *
-                    </label>
-                    <div className="relative group">
-                      <input
-                        type="text"
-                        name="to"
-                        value={formData.to}
-                        onChange={(e) => setFormData({...formData, to: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400"
-                        placeholder="Destination City"
-                        required
-                      />
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="relative">
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <FiUsers className="mr-2 text-blue-600" />
+                        Phone Number *
+                      </label>
+                      <div className="relative group">
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400"
+                          placeholder="+91 98765 43210"
+                          required
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                      <FiCalendar className="mr-2 text-blue-600" />
-                      Travel Date *
-                    </label>
-                    <div className="relative group">
-                      <input
-                        type="date"
-                        name="date"
-                        value={formData.date}
-                        onChange={(e) => setFormData({...formData, date: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400"
-                        required
-                      />
+                    <div className="relative">
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <FiMapPin className="mr-2 text-blue-600" />
+                        From *
+                      </label>
+                      <div className="relative group">
+                        <input
+                          type="text"
+                          name="from"
+                          value={formData.from}
+                          onChange={(e) => setFormData({ ...formData, from: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400"
+                          placeholder="Departure City"
+                          required
+                        />
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                      <FiSearch className="mr-2 text-blue-600" />
-                      Bus Type
-                    </label>
-                    <div className="relative group">
-                      <select
-                        name="busType"
-                        value={formData.busType}
-                        onChange={(e) => setFormData({...formData, busType: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400 appearance-none"
-                      >
-                        {busTypes.map(type => (
-                          <option key={type.id} value={type.id}>{type.name}</option>
-                        ))}
-                      </select>
+                    <div className="relative">
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <FiMapPin className="mr-2 text-green-600" />
+                        To *
+                      </label>
+                      <div className="relative group">
+                        <input
+                          type="text"
+                          name="to"
+                          value={formData.to}
+                          onChange={(e) => setFormData({ ...formData, to: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400"
+                          placeholder="Destination City"
+                          required
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                      <FiShield className="mr-2 text-blue-600" />
-                      Travel Class
-                    </label>
-                    <div className="relative group">
-                      <select
-                        name="travelClass"
-                        value={formData.travelClass}
-                        onChange={(e) => setFormData({...formData, travelClass: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400 appearance-none"
-                      >
-                        {travelClasses.map(travelClass => (
-                          <option key={travelClass.id} value={travelClass.id}>
-                            {travelClass.name} ({travelClass.price})
-                          </option>
-                        ))}
-                      </select>
+                    <div className="relative">
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <FiCalendar className="mr-2 text-blue-600" />
+                        Departure Date *
+                      </label>
+                      <div className="relative group">
+                        <input
+                          type="date"
+                          name="date"
+                          value={formData.date}
+                          min={new Date().toISOString().split('T')[0]}
+                          onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400"
+                          required
+                        />
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                {/* Success/Error Message */}
-                {submitMessage && (
-                  <div className={`p-6 rounded-2xl mb-8 ${
-                    submitMessage.includes('success') 
-                      ? 'bg-green-50 text-green-800 border-2 border-green-200' 
-                      : 'bg-red-50 text-red-800 border-2 border-red-200'
-                  }`}>
-                    <div className="flex items-center">
-                      <FiCheck className={`w-6 h-6 mr-3 ${
-                        submitMessage.includes('success') ? 'text-green-600' : 'text-red-600'
-                      }`} />
-                      <span className="font-medium">{submitMessage}</span>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex justify-center mt-6">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-medium py-3 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg disabled:scale-100"
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center">
-                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Sending Enquiry...
-                      </span>
-                    ) : (
-                      <span className="flex items-center">
-                        <FiSearch className="mr-2" />
-                        Send Enquiry
-                      </span>
+                    {formData.isRoundTrip && (
+                      <div className="relative">
+                        <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                          <FiCalendar className="mr-2 text-green-600" />
+                          Return Date *
+                        </label>
+                        <div className="relative group">
+                          <input
+                            type="date"
+                            name="returnDate"
+                            value={formData.returnDate}
+                            min={formData.date || new Date().toISOString().split('T')[0]}
+                            onChange={(e) => setFormData({ ...formData, returnDate: e.target.value })}
+                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500 bg-white transition-all duration-300 hover:border-green-400"
+                            required={formData.isRoundTrip}
+                          />
+                        </div>
+                      </div>
                     )}
-                  </button>
-                </div>
-              </form>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <FiSearch className="mr-2 text-blue-600" />
+                        Bus Type
+                      </label>
+                      <div className="relative group">
+                        <select
+                          name="busType"
+                          value={formData.busType}
+                          onChange={(e) => setFormData({ ...formData, busType: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400 appearance-none"
+                        >
+                          {busTypes.map(type => (
+                            <option key={type.id} value={type.id}>{type.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <FiShield className="mr-2 text-blue-600" />
+                        Travel Class
+                      </label>
+                      <div className="relative group">
+                        <select
+                          name="travelClass"
+                          value={formData.travelClass}
+                          onChange={(e) => setFormData({ ...formData, travelClass: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-all duration-300 hover:border-blue-400 appearance-none"
+                        >
+                          {travelClasses.map(travelClass => (
+                            <option key={travelClass.id} value={travelClass.id}>
+                              {travelClass.name} ({travelClass.price})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Success/Error Message */}
+                  {submitMessage && (
+                    <div className={`p-6 rounded-2xl mb-8 ${submitMessage.type === 'success'
+                        ? 'bg-green-50 text-green-800 border-2 border-green-200'
+                        : 'bg-red-50 text-red-800 border-2 border-red-200'
+                      }`}>
+                      <div className="flex items-center">
+                        {submitMessage.type === 'success' ? (
+                          <svg className="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        )}
+                        <p className="font-medium">{submitMessage.text}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex justify-center mt-6">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-medium py-3 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg disabled:scale-100"
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center">
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Sending Enquiry...
+                        </span>
+                      ) : (
+                        <span className="flex items-center">
+                          <FiSearch className="mr-2" />
+                          Send Enquiry
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
@@ -491,13 +475,13 @@ export default function BookingPage() {
             <h3 className="text-xl md:text-2xl font-medium text-gray-900 mt-1 mb-2">Travel with Comfort & Style</h3>
             <p className="text-gray-600 text-sm leading-relaxed">Experience luxury travel with our world-class amenities and services</p>
           </div>
-          
+
           <div className="max-w-3xl mx-auto">
             {/* Step/Ladder Layout */}
             <div className="relative">
               {/* Connection Line */}
               <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-200 via-blue-300 to-cyan-200"></div>
-              
+
               {/* Steps */}
               {[
                 {
@@ -537,7 +521,7 @@ export default function BookingPage() {
                   description: 'Extensive network covering major cities and tourist destinations.'
                 }
               ].map((facility, index) => (
-                <motion.div 
+                <motion.div
                   key={index}
                   initial={{ opacity: 0, x: -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -555,7 +539,7 @@ export default function BookingPage() {
                       {facility.icon}
                     </div>
                   </div>
-                  
+
                   {/* Content Card */}
                   <div className={`ml-4 md:ml-6 ${index % 2 === 0 ? 'md:ml-6' : 'md:mr-6'}`}>
                     <div className="bg-white/80 backdrop-blur-sm p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-blue-200 transform hover:-translate-y-0.5 max-w-xs">
@@ -563,7 +547,7 @@ export default function BookingPage() {
                       <p className="text-gray-600 text-xs leading-relaxed">{facility.description}</p>
                     </div>
                   </div>
-                  
+
                   {/* Alternating Design Elements */}
                   {index % 2 === 1 && (
                     <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-3 h-3 bg-blue-200 rounded-full"></div>
@@ -571,7 +555,7 @@ export default function BookingPage() {
                 </motion.div>
               ))}
             </div>
-            
+
             {/* Bottom Completion Indicator */}
             <div className="text-center mt-8">
               <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-full shadow-md">
@@ -583,53 +567,13 @@ export default function BookingPage() {
         </div>
       </section>
 
-      {/* Popular Routes */}
-      <section className="py-16 bg-gradient-to-br from-white via-blue-50 to-cyan-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <h3 className="text-2xl md:text-3xl font-medium text-gray-900 mb-4">Popular Routes</h3>
-            <p className="text-gray-600 leading-relaxed">Book our most popular routes with best prices and premium comfort</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {popularRoutes.map((route, index) => (
-              <div key={index} className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border border-gray-100 hover:border-blue-200 transform hover:-translate-y-1">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h4 className="text-base font-medium text-gray-900">{route.from}</h4>
-                    <div className="flex items-center my-1">
-                      <span className="text-blue-600 text-xl">→</span>
-                    </div>
-                    <h4 className="text-base font-medium text-gray-900">{route.to}</h4>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xl font-medium text-blue-600">{route.price}</span>
-                    <p className="text-xs text-gray-500">per seat</p>
-                  </div>
-                </div>
-                <div className="flex items-center text-sm text-gray-600 mb-4">
-                  <FiClock className="mr-2 text-blue-600" />
-                  <span>Daily Service Available</span>
-                </div>
-                <Link 
-                  href="/fleet"
-                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 flex justify-center items-center"
-                >
-                  View Buses
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Search Results */}
       {showResults && (
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">Available Buses</h2>
-              
+
               <div className="grid grid-cols-1 gap-6">
                 {searchResults.map((bus) => (
                   <div key={bus.id} className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200">
@@ -643,7 +587,7 @@ export default function BookingPage() {
                           <p className="text-gray-700 font-semibold">{bus.name}</p>
                         </div>
                       </div>
-                      
+
                       {/* Bus Details */}
                       <div className="md:w-2/3 p-6">
                         <div className="flex justify-between items-start mb-4">
@@ -689,21 +633,21 @@ export default function BookingPage() {
                           ))}
                         </div>
                       </div>
+                    </div>
 
-                      <div className="flex justify-between items-center">
-                        <button
-                          onClick={() => handleBusSelect(bus)}
-                          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-                        >
-                          Select Bus
-                        </button>
-                        <Link
-                          href="/fleet"
-                          className="text-blue-600 hover:text-blue-700 font-medium text-sm"
-                        >
-                          View More Buses →
-                        </Link>
-                      </div>
+                    <div className="flex justify-between items-center p-6 border-t border-gray-100">
+                      <button
+                        onClick={() => handleBusSelect(bus)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                      >
+                        Select Bus
+                      </button>
+                      <Link
+                        href="/fleet"
+                        className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                      >
+                        View More Buses →
+                      </Link>
                     </div>
                   </div>
                 ))}
@@ -755,13 +699,62 @@ export default function BookingPage() {
                 </div>
               </div>
 
+              {/* Trip Type Toggle */}
+              <div className="flex justify-center mb-6">
+                <div className="inline-flex bg-white/60 backdrop-blur-sm p-1 rounded-xl border border-gray-200">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, isRoundTrip: false })}
+                    className={`px-6 py-2 rounded-lg transition-all duration-300 ${!formData.isRoundTrip ? 'bg-blue-600 text-white shadow-md' : 'text-gray-600 hover:bg-gray-100'}`}
+                  >
+                    One Way
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, isRoundTrip: true })}
+                    className={`px-6 py-2 rounded-lg transition-all duration-300 ${formData.isRoundTrip ? 'bg-blue-600 text-white shadow-md' : 'text-gray-600 hover:bg-gray-100'}`}
+                  >
+                    Round Trip
+                  </button>
+                </div>
+              </div>
+
               {/* Booking Form */}
               <form onSubmit={handleBookingSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Departure Date *</label>
+                    <input
+                      type="date"
+                      name="date"
+                      value={formData.date}
+                      onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                      required
+                      min={new Date().toISOString().split('T')[0]}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                    />
+                  </div>
+                  {formData.isRoundTrip && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Return Date *</label>
+                      <input
+                        type="date"
+                        name="returnDate"
+                        value={formData.returnDate || ''}
+                        onChange={(e) => setFormData({ ...formData, returnDate: e.target.value })}
+                        required={formData.isRoundTrip}
+                        min={formData.date || new Date().toISOString().split('T')[0]}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                      />
+                    </div>
+                  )}
+                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
                     <input
                       type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter your full name"
@@ -771,6 +764,9 @@ export default function BookingPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
                     <input
                       type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="your.email@example.com"
@@ -780,6 +776,9 @@ export default function BookingPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
                     <input
                       type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="+91 98765 43210"
@@ -788,6 +787,9 @@ export default function BookingPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Number of Seats *</label>
                     <select
+                      name="passengers"
+                      value={formData.passengers}
+                      onChange={(e) => setFormData({ ...formData, passengers: e.target.value })}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 appearance-none"
                     >
@@ -801,6 +803,9 @@ export default function BookingPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Special Requirements</label>
                   <textarea
+                    name="specialRequirements"
+                    value={formData.specialRequirements || ''}
+                    onChange={(e) => setFormData({ ...formData, specialRequirements: e.target.value })}
                     rows="3"
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
                     placeholder="Any special needs or requests..."
@@ -832,9 +837,6 @@ export default function BookingPage() {
           </div>
         </div>
       )}
-
-
-
     </div>
   );
 }

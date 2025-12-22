@@ -21,7 +21,7 @@ const Footer = () => {
   const contactInfo = [
     { icon: <FiMapPin className="text-blue-500" />, text: '123 Travel Plaza, Mumbai, Maharashtra, India - 400001' },
     { icon: <FiPhone className="text-blue-500" />, text: '+91 7972858515' },
-    { icon: <FiMail className="text-blue-500" />, text: 'info@nttourism.com' },
+    { icon: <FiMail className="text-blue-500" />, text: 'infonttourism@gmail.com' },
     { icon: <FiClock className="text-blue-500" />, text: '24/7 Customer Support' },
   ];
 

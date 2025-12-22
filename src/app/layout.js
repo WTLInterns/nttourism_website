@@ -20,8 +20,7 @@ export const metadata = {
   description: 'Experience luxury bus travel with NT Tourism. Comfortable, safe, and reliable transportation for all your travel needs across India.',
   keywords: 'bus travel, luxury buses, intercity travel, NT Tourism, bus booking, bus rental, coach services',
   author: 'NT Tourism',
-  viewport: 'width=device-width, initial-scale=1.0',
-  themeColor: '#2563eb',
+  metadataBase: new URL('https://nttourism.com'),
   manifest: '/site.webmanifest',
   icons: {
     icon: '/favicon.ico',
@@ -49,6 +48,12 @@ export const metadata = {
     description: 'Experience luxury and comfort with our premium bus travel services.',
     images: ['/images/og-image.jpg'],
   },
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1.0,
+  themeColor: '#2563eb',
 }
 
 export default function RootLayout({ children }) {
