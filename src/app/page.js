@@ -110,6 +110,8 @@ export default function Home() {
               <span className="text-white font-medium">SINCE 2024 • 50,000+ HAPPY TRAVELERS</span>
             </motion.div> */}
             
+            {/*hii*/}
+            
             <motion.h1 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
