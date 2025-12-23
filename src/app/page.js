@@ -5,8 +5,11 @@ import Image from 'next/image';
 import { FiArrowRight, FiClock, FiMapPin, FiPhone, FiShield, FiWifi, FiCoffee, FiUsers, FiCalendar, FiSearch } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
+
   const busImages = [
     '/images/Buss.png',
     '/images/Buss2.png', 
@@ -388,7 +391,7 @@ export default function Home() {
       <section className="py-20 md:py-28 relative overflow-hidden">
         {/* Glassy Background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1488646953014-85cb44e25828b?q=80&w=2070')] bg-cover bg-center opacity-5"></div>
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1488646953014-021faa106b9b?q=80&w=2070')] bg-cover bg-center opacity-5"></div>
           <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-blue-50/90 to-indigo-50/95 backdrop-blur-sm"></div>
         </div>
         
@@ -447,7 +450,8 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="group bg-white/70 backdrop-blur-lg rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/30 hover:border-blue-200 hover:scale-105 overflow-hidden"
+                className="group bg-white/70 backdrop-blur-lg rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/30 hover:border-blue-200 hover:scale-105 overflow-hidden cursor-pointer"
+                onClick={() => router.push('/booking')}
               >
                 <div className="relative h-48 w-full overflow-hidden">
                   <Image 
@@ -556,7 +560,7 @@ export default function Home() {
             })}
           </div>
           
-          <motion.div 
+          {/* <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -570,7 +574,7 @@ export default function Home() {
               View All Tourism Routes 
               <FiArrowRight className="ml-2 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
-          </motion.div>
+          </motion.div> */}
         </div>
       </section>
 

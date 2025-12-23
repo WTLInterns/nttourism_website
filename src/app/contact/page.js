@@ -113,7 +113,7 @@ export default function ContactPage() {
                 {/* Container to control image size */}
                 <div className="relative w-full h-[400px] max-w-[600px] mx-auto">
                   <Image
-                    src="/images/Bus5.png"
+                    src="/images/contact.png"
                     alt="Modern Bus Transportation"
                     fill
                     className="object-contain"
